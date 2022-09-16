@@ -6,6 +6,7 @@ console.log(process.env);
 const main = async() => {
     const searches = new Searches();
     let opt;
+    
 
     do{
         opt = await inquirerMenu();
@@ -24,10 +25,13 @@ const main = async() => {
 
                 const placeSelected = resultPlaces.find(place => place.id === id); //.find() devuelve el primer elemento del array que cumpla con la condicion
                 
-
-                // searches.saveHistorial(placeSelected.namePlace);
+                //Save on DB
+                searches.saveHistory(placeSelected.namePlace);
+                
                 //Weather
                 const weather = await searches.weather(placeSelected.lat, placeSelected.lng);
+
+                
 
                 //Show results
 
@@ -43,7 +47,11 @@ const main = async() => {
             
             break;
             case 2:
-                
+                searches.historyCapitalized.forEach((place, i) => {
+                    const idx = `${ i + 1}.`.green;
+
+                    console.log(`${idx} ${place}`)
+                });
             break; 
         }
 

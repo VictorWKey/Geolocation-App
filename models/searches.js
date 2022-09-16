@@ -1,14 +1,26 @@
+import fs from 'fs';
+
 import * as dotenv from 'dotenv';
 dotenv.config();
 import axios from 'axios';
 
 class Searches{
-    constructor(){
-        this.history = [`Guanajuato`, `Arkansas`, `Quebec`];
+    history = [];
+    dbpath = "./db/database.json";
 
-        //Read DB If exist 
+    constructor(){ 
+        this.readDB();    //Read DB If exist 
     }
 
+    get historyCapitalized(){
+        return this.history.map(place => {
+            let words = place.split(" ");
+
+            words = words.map(word => word[0].toUpperCase() + word.substring(1));
+            return words.join(" ");
+        })
+         
+    }
     get paramsMapbox(){
         return {
             "access_token": process.env.MAPBOX_KEY,
@@ -71,8 +83,41 @@ class Searches{
         }
     }
 
-    saveHistorial(place){
-        this.history.unshift(place);
+    saveHistory(place){
+
+        if(this.history.includes(place.toLocaleLowerCase())){
+            return;
+        }
+
+        this.history.unshift(place.toLocaleLowerCase());
+
+        this.history = this.history.slice(0,5); //The history forever will be of 5 places
+
+        this.saveDB();
+    }
+
+    saveDB(){
+        const payload = {
+            history: this.history
+        }
+
+        fs.writeFileSync(this.dbpath, JSON.stringify(payload));
+    }
+
+    readDB(){
+        if(!fs.existsSync(this.dbpath)){
+            return null;
+        }
+
+        const info = fs.readFileSync(this.dbpath, {encoding: "utf-8"});
+
+        const data = JSON.parse(info);
+
+        this.history = data.history;
+        // data.history.forEach(log => {
+        //     this.history.push(log);           
+        // });
+        
     }
 }
 
