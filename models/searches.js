@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import axios from 'axios';
 
 class Searches{
@@ -9,8 +11,8 @@ class Searches{
 
     get paramsMapbox(){
         return {
-            "access_token": "pk.eyJ1IjoidmljdG9yd2tleSIsImEiOiJjbDgyaHp3dGEwcHp5M3ZvMzYxM3JqMjd1In0.MWJiyM4OMYjXucxnDXZkEg",
-            "limit": 8,
+            "access_token": process.env.MAPBOX_KEY,
+            "limit": 5,
             "language": "es" 
         }
     }
@@ -24,7 +26,12 @@ class Searches{
 
             const res = await instance.get();
 
-            console.log(res.data);
+            return res.data.features.map( place => ({
+                id: place.id,
+                namePlace: place.place_name,
+                lat: place.center[0],
+                lng: place.center[1]
+            }));
         } catch (err){
             return [];
 

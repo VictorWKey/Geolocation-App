@@ -69,11 +69,11 @@ const readInput = async message => {
 
 };
 
-const deleteMenu = async (tasks = []) => {
-    const choices = tasks.map((task, i) => {
+const selectPlace = async (places = []) => {
+    const choices = places.map((place, i) => {
         return {
-            value: task.id,
-            name: `${(i + 1 + `.`).toString().green} ${task.desc}`
+            value: place.id,
+            name: `${(i + 1 + `.`).toString().green} ${place.namePlace}`
         }
     });
 
@@ -86,7 +86,7 @@ const deleteMenu = async (tasks = []) => {
         {
             type: `list`,
             name: `id`,
-            message: `What file do you want to delete?`,
+            message: `Select one place`,
             choices
         }
     ];
@@ -133,5 +133,5 @@ const completeMenu = async (tasks = []) => {
     return ids;
 };
 
-export {inquirerMenu, pause, readInput, deleteMenu, confirmAction, completeMenu};
+export {inquirerMenu, pause, readInput, selectPlace, confirmAction, completeMenu};
 
