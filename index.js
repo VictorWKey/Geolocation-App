@@ -12,31 +12,39 @@ const main = async() => {
         
         switch (opt) {
             case 1:
-                //Mostrar mensaje
+                //Show message
                 const place = await readInput(`City: `);
 
-                //Buscar los lugares
+                //Search places
                 const resultPlaces = await searches.city(place); 
 
-                //Seleccionar el lugar
+                //Select place
                 const id = await selectPlace(resultPlaces);
+                if(id === `0`) continue;
 
                 const placeSelected = resultPlaces.find(place => place.id === id); //.find() devuelve el primer elemento del array que cumpla con la condicion
                 
-                //Clima
 
-                //Mostrar resultados
+                // searches.saveHistorial(placeSelected.namePlace);
+                //Weather
+                const weather = await searches.weather(placeSelected.lat, placeSelected.lng);
+
+                //Show results
 
                 console.log(`\nInfo of the city\n`);
 
                 console.log(`City: `, placeSelected.namePlace);
                 console.log(`Lat: `, placeSelected.lat);
                 console.log(`Lng: `, placeSelected.lng);
-                console.log(`Temperature: `, );
-                console.log(`Min: `, );
-                console.log(`Max: `, );
+                console.log(`Temperature: `, weather.temp);
+                console.log(`Min: `, weather.min);
+                console.log(`Max: `, weather.max);
+                console.log(`Description: `, weather.desc);
             
             break;
+            case 2:
+                
+            break; 
         }
 
         if(opt !== 0) await pause();

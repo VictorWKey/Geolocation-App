@@ -17,6 +17,15 @@ class Searches{
         }
     }
 
+    get paramsOpenWeather(){
+        return {
+            "appid": process.env.OPENWEATHER_KEY,
+            "units": "metric",
+            "lang": "es",
+        }
+        
+    }
+
     async city( place = ``){
         try{
             const instance = axios.create({
@@ -29,13 +38,41 @@ class Searches{
             return res.data.features.map( place => ({
                 id: place.id,
                 namePlace: place.place_name,
-                lat: place.center[0],
-                lng: place.center[1]
+                lat: place.center[1],
+                lng: place.center[0]
             }));
         } catch (err){
             return [];
-
         }
+    }
+
+    async weather(lat, lon){
+        try{
+            const instance = axios.create({
+                baseURL: `https://api.openweathermap.org/data/2.5/weather` ,
+                params: {...this.paramsOpenWeather, lat, lon}
+            })
+
+            const data = {};
+
+            const res = await instance.get();
+
+            const {weather, main} = res.data; //Debido a que vamos a repetir muchas veces el res.data, utilizamos la destructuracion para no repetirlo muchas veces
+
+            return {
+                desc: weather[0].description,
+                temp: main.temp,
+                min: main.temp_min,
+                max: main.temp_max
+            }
+
+        } catch (err){
+            console.log(err);
+        }
+    }
+
+    saveHistorial(place){
+        this.history.unshift(place);
     }
 }
 
